@@ -31,10 +31,12 @@ async function run() {
     await client.connect();
 
     const database = client.db("campaignsDB");
+
     const datalist = database.collection("datalist");
+    const userlist = database.collection("userlist")
 
     app.get('/campaigns', async(req, res) => {
-        const cursor = datalist.find();
+        const cursor = datalist.find().limit(6);
         const result = await cursor.toArray(cursor);
         res.send(result);
     })
@@ -49,6 +51,18 @@ async function run() {
     app.post('/campaigns', async(req , res) => {
         const newCampaigns = req.body;
         const result = await datalist.insertOne(newCampaigns)
+        res.send(result)
+    })
+
+    app.get('/user', async(req, res) => {
+        const cursor = userlist.find();
+        const result = await cursor.toArray(cursor);
+        res.send(result);
+    })
+
+    app.post('/user', async(req, res) => {
+        const newUser = req.body;
+        const result = await userlist.insertOne(newUser)
         res.send(result)
     })
 
