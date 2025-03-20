@@ -41,6 +41,12 @@ async function run() {
         res.send(result);
     })
 
+    app.get('/campaignss', async(req, res) => {
+        const cursor = datalist.find();
+        const result = await cursor.toArray(cursor);
+        res.send(result);
+    })
+
     app.get('/campaigns/:id', async(req, res) => {
         const id = req.params.id;
         const find = {_id: new ObjectId(id)}
