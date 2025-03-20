@@ -33,7 +33,8 @@ async function run() {
     const database = client.db("campaignsDB");
 
     const datalist = database.collection("datalist");
-    const userlist = database.collection("userlist")
+    const userlist = database.collection("userlist");
+    const donationlist = database.collection("donationDB");
 
     app.get('/campaigns', async(req, res) => {
         const cursor = datalist.find().limit(6);
@@ -47,7 +48,7 @@ async function run() {
         res.send(result);
     })
 
-    app.get('/campaigns/:id', async(req, res) => {
+    app.get('/campaign/:id', async(req, res) => {
         const id = req.params.id;
         const find = {_id: new ObjectId(id)}
         const result = await datalist.findOne(find)
@@ -57,6 +58,12 @@ async function run() {
     app.post('/campaigns', async(req , res) => {
         const newCampaigns = req.body;
         const result = await datalist.insertOne(newCampaigns)
+        res.send(result)
+    })
+
+    app.post('/donatelist', async(req , res) => {
+        const newDonation = req.body;
+        const result = await donationlist.insertOne(newDonation)
         res.send(result)
     })
 
