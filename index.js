@@ -83,6 +83,13 @@ async function run() {
       res.send(result)
     })
 
+    app.delete('/campaign/:id', async(req, res) => {
+      const id = req.params.id;
+      const find = {_id: new ObjectId(id)}
+      const result = await datalist.deleteOne(find);
+      res.send(result)
+    })
+
     
 
     app.post('/donatelist', async(req , res) => {
