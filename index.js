@@ -90,7 +90,11 @@ async function run() {
       res.send(result)
     })
 
-    
+    app.get('/donations', async(req, res) => {
+        const cursor = donationlist.find();
+        const result = await cursor.toArray(cursor);
+        res.send(result); 
+    })
 
     app.post('/donatelist', async(req , res) => {
         const newDonation = req.body;
