@@ -36,16 +36,24 @@ async function run() {
     const userlist = database.collection("userlist");
     const donationlist = database.collection("donationDB");
 
-    app.get('/campaigns', async(req, res) => {
+    // campaigns section
+
+    app.get('/campaign', async(req, res) => {
         const cursor = datalist.find().limit(6);
         const result = await cursor.toArray(cursor);
         res.send(result);
     })
 
-    app.get('/allcampaigns', async(req, res) => {
+    app.get('/campaigns', async(req, res) => {
         const cursor = datalist.find();
         const result = await cursor.toArray(cursor);
         res.send(result);
+    })
+
+    app.post('/campaigns', async(req , res) => {
+      const newCampaigns = req.body;
+      const result = await datalist.insertOne(newCampaigns)
+      res.send(result)
     })
 
     app.get('/campaign/:id', async(req, res) => {
@@ -55,11 +63,27 @@ async function run() {
         res.send(result)
     })
 
-    app.post('/campaigns', async(req , res) => {
-        const newCampaigns = req.body;
-        const result = await datalist.insertOne(newCampaigns)
-        res.send(result)
+    app.put('/campaign/:id', async(req, res) => {
+      const id = req.params.id;
+      const find = {_id: new ObjectId(id)}
+      const update = req.body
+      const options = { upsert: true }
+      const updateCampaign = {
+        $set: {
+          image: update.image,
+          title: update.title,
+          type: update.type,
+          amount: update.amount,
+          deadline: update.deadline,
+          description: update.description,
+        }
+      }
+
+      const result = await datalist.updateOne(find, updateCampaign, options)
+      res.send(result)
     })
+
+    
 
     app.post('/donatelist', async(req , res) => {
         const newDonation = req.body;
