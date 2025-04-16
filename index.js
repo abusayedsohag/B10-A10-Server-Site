@@ -9,8 +9,8 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-    const data = "Connected"
-    res.send(data)
+  const data = "Connected"
+  res.send(data)
 })
 
 //MongoDB section
@@ -37,35 +37,40 @@ async function run() {
     const donationlist = database.collection("donationDB");
 
     // campaigns section
+    app.get('/campaign', async (req, res) => {
 
-    app.get('/campaign', async(req, res) => {
-        const cursor = datalist.find().limit(6);
-        const result = await cursor.toArray(cursor);
-        res.send(result);
+      const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+      const find =  datalist
+        .find({ deadline: { $gte: today } })
+        .limit(6)
+      const result = await find.toArray();
+      res.send(result);
+    });
+
+
+
+    app.get('/campaigns', async (req, res) => {
+      const cursor = datalist.find();
+      const result = await cursor.toArray(cursor);
+      res.send(result);
     })
 
-    app.get('/campaigns', async(req, res) => {
-        const cursor = datalist.find();
-        const result = await cursor.toArray(cursor);
-        res.send(result);
-    })
-
-    app.post('/campaigns', async(req , res) => {
+    app.post('/campaigns', async (req, res) => {
       const newCampaigns = req.body;
       const result = await datalist.insertOne(newCampaigns)
       res.send(result)
     })
 
-    app.get('/campaign/:id', async(req, res) => {
-        const id = req.params.id;
-        const find = {_id: new ObjectId(id)}
-        const result = await datalist.findOne(find)
-        res.send(result)
+    app.get('/campaign/:id', async (req, res) => {
+      const id = req.params.id;
+      const find = { _id: new ObjectId(id) }
+      const result = await datalist.findOne(find)
+      res.send(result)
     })
 
-    app.put('/campaign/:id', async(req, res) => {
+    app.put('/campaign/:id', async (req, res) => {
       const id = req.params.id;
-      const find = {_id: new ObjectId(id)}
+      const find = { _id: new ObjectId(id) }
       const update = req.body
       const options = { upsert: true }
       const updateCampaign = {
@@ -83,35 +88,35 @@ async function run() {
       res.send(result)
     })
 
-    app.delete('/campaign/:id', async(req, res) => {
+    app.delete('/campaign/:id', async (req, res) => {
       const id = req.params.id;
-      const find = {_id: new ObjectId(id)}
+      const find = { _id: new ObjectId(id) }
       const result = await datalist.deleteOne(find);
       res.send(result)
     })
 
-    app.get('/donations', async(req, res) => {
-        const cursor = donationlist.find();
-        const result = await cursor.toArray(cursor);
-        res.send(result); 
+    app.get('/donations', async (req, res) => {
+      const cursor = donationlist.find();
+      const result = await cursor.toArray(cursor);
+      res.send(result);
     })
 
-    app.post('/donatelist', async(req , res) => {
-        const newDonation = req.body;
-        const result = await donationlist.insertOne(newDonation)
-        res.send(result)
+    app.post('/donatelist', async (req, res) => {
+      const newDonation = req.body;
+      const result = await donationlist.insertOne(newDonation)
+      res.send(result)
     })
 
-    app.get('/user', async(req, res) => {
-        const cursor = userlist.find();
-        const result = await cursor.toArray(cursor);
-        res.send(result);
+    app.get('/user', async (req, res) => {
+      const cursor = userlist.find();
+      const result = await cursor.toArray(cursor);
+      res.send(result);
     })
 
-    app.post('/user', async(req, res) => {
-        const newUser = req.body;
-        const result = await userlist.insertOne(newUser)
-        res.send(result)
+    app.post('/user', async (req, res) => {
+      const newUser = req.body;
+      const result = await userlist.insertOne(newUser)
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection
@@ -128,6 +133,6 @@ run().catch(console.dir);
 
 
 
-app.listen(port , () => {
-    console.log('Connected')
+app.listen(port, () => {
+  console.log('Connected')
 })
