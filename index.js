@@ -47,8 +47,6 @@ async function run() {
       res.send(result);
     });
 
-
-
     app.get('/campaigns', async (req, res) => {
       const cursor = datalist.find();
       const result = await cursor.toArray(cursor);
